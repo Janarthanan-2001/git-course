@@ -1,1 +1,2 @@
-Gmt the user data..
+Get the user data..
+process the dats
