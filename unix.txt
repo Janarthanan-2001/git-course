@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Input file name
+input_file="input.txt"
+
+# Define a function to remove double quotes from each field
+remove_quotes() {
+    # Replace two double quotes with a single double quote
+    # and then remove the first and last double quotes
+    echo "$1" | sed 's/""/"/g' | sed 's/^"//;s/"$//'
+}
+
+# Define a function to sort the lines based on the first column
+sort_lines() {
+    sort -t'|' -k1n
+}
+
+# Main function to read input file, process lines and sort them
+main() {
+    # Read each line from the input file
+    while IFS= read -r line; do
+        # Split the line into fields based on the delimiter "|"
+        IFS='|' read -r -a fields <<<"$line"
+        
+        # Process each field except the last one
+        for ((i = 0; i < ${#fields[@]} - 1; i++)); do
+            # Remove double quotes from the field
+            fields[$i]=$(remove_quotes "${fields[$i]}")
+        done
+
+        # Join the fields back into a line with the delimiter "|"
+        processed_line=$(IFS='|'; echo "${fields[*]}")
+
+        # Print the processed line
+        echo "$processed_line"
+    done <"$input_file" | sort_lines
+}
+
+# Call the main function
+main
